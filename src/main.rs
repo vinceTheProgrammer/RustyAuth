@@ -15,7 +15,7 @@ use uuid::Uuid;
 use std::{env, net::SocketAddr};
 use axum::{routing::{get}, Router};
 
-use crate::routes::{auth::auth_proxy, login::{handle_login, login_page}, register::{register, register_page}};
+use crate::routes::{auth::auth_proxy, login::{handle_login, login_page}, logout::logout, register::{register, register_page}};
 
 #[tokio::main]
 async fn main() {
@@ -60,6 +60,7 @@ async fn main() {
         .route("/", get(root))
         .route("/register", get(register_page).post(register)).with_state(pool.clone())
         .route("/login", get(login_page).post(handle_login)).with_state(pool.clone())
+        .route("/logout", get(logout).with_state(pool.clone()))
         .route("/auth/proxy", get(auth_proxy).with_state(pool.clone()));
 
     // define address to bind to localhost with the port that was defined above
@@ -111,6 +112,17 @@ fn create_session(connection: &PooledConnection<SqliteConnectionManager>, userna
     ) {
         Ok(_) => Ok(session_id),
         Err(_) => Err("Failed to insert session".to_owned()),
+    }
+}
+
+fn delete_session(connection: &PooledConnection<SqliteConnectionManager>, session_id: &str) -> Result<(), String> {
+    match connection.execute(
+        "DELETE FROM sessions WHERE id = ?1",
+        params![session_id],
+    ) {
+        Ok(affected_rows) if affected_rows > 0 => Ok(()),
+        Ok(_) => Err("No session found to delete".to_owned()),
+        Err(_) => Err("Failed to delete session".to_owned()),
     }
 }
 

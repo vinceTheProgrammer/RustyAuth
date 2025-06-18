@@ -12,5 +12,6 @@ r2d2 = "0.8.10"
 r2d2_sqlite = "0.30.0"
 rusqlite = { version = "0.36.0", features = ["bundled"] }
 serde = { version = "1.0.219", features = ["derive"] }
+time = "0.3.41"
 tokio = { version = "1.45.1", features = ["rt", "rt-multi-thread", "net", "time"] }
 uuid = "1.17.0"
