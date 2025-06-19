@@ -7,21 +7,58 @@ use argon2::{
     },
     Argon2
 };
+use base64::{engine::{self, general_purpose}, Engine};
 use chrono::Utc;
-use r2d2::PooledConnection;
+use r2d2::{Pool, PooledConnection};
 use r2d2_sqlite::SqliteConnectionManager;
 use rusqlite::params;
 use uuid::Uuid;
-use std::{env, net::SocketAddr};
+use std::{env, net::SocketAddr, path::Path};
 use axum::{routing::{get}, Router};
 
 use crate::routes::{auth::auth_proxy, login::{handle_login, login_page}, logout::logout, register::{register, register_page}};
+
+#[derive(Clone)]
+struct AppState {
+    pool: Pool<SqliteConnectionManager>,
+    css: Option<String>,
+    logo_data_url: Option<String>,
+    site_name: Option<String>
+}
 
 #[tokio::main]
 async fn main() {
     // define path of database as user defined path or default to creating the database in the current directory
     let database_path = env::var("RUSTYAUTH_DB_PATH")
         .unwrap_or_else(|_| "./rusty_auth.db".to_string());
+
+    let css_path= match env::var("RUSTYAUTH_CSS_PATH") {
+        Ok(string) => Some(string),
+        Err(_) => None,
+    };
+
+    let logo_path= match env::var("RUSTYAUTH_LOGO_PATH") {
+        Ok(string) => Some(string),
+        Err(_) => None,
+    };
+
+    let site_name= match env::var("RUSTYAUTH_SITE_NAME") {
+        Ok(string) => Some(string),
+        Err(_) => None,
+    };
+
+    let css = if let Some(path) = css_path {
+        Some(std::fs::read_to_string(path).expect("Error getting custom css file"))
+    } else {
+        None
+    };
+
+    let logo_data_url = if let Some(path_string) = logo_path {
+        let path = Path::new(&path_string);
+        Some(read_logo_base64(&path).expect("Error reading logo"))
+    } else {
+        None
+    };
 
     // create the r2d2_sqlite connection manager for managing connections of a connection pool
     let manager = SqliteConnectionManager::file(database_path);
@@ -55,11 +92,18 @@ async fn main() {
         .parse::<u16>()
         .expect("RUSTYAUTH_PORT must be a valid u16 port number");
 
+    let state = AppState {
+        pool: pool.clone(),
+        css,
+        logo_data_url,
+        site_name
+    };
+
     // define the axum Router and set each route
     let app = Router::new()
         .route("/", get(root))
-        .route("/register", get(register_page).post(register)).with_state(pool.clone())
-        .route("/login", get(login_page).post(handle_login)).with_state(pool.clone())
+        .route("/register", get(register_page).post(register)).with_state(state.clone())
+        .route("/login", get(login_page).post(handle_login)).with_state(state.clone())
         .route("/logout", get(logout).with_state(pool.clone()))
         .route("/auth/proxy", get(auth_proxy).with_state(pool.clone()));
 
@@ -137,4 +181,7 @@ fn get_session_username(
     ).ok()
 }
 
-
+fn read_logo_base64(path: &Path) -> Result<String, std::io::Error> {
+    let bytes = std::fs::read(path)?;
+    Ok(format!("data:image/png;base64,{}", general_purpose::STANDARD_NO_PAD.encode(&bytes)))
+}

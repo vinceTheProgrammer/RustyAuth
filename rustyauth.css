@@ -1,0 +1,96 @@
+/* rustyauth.css */
+
+/* Not used by default. Must specify RUSTYAUTH_CSS_PATH /*
+
+/* Reset & base */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: system-ui, sans-serif;
+}
+
+html, body {
+    height: 100%;
+    background-color: #121212;
+    color: #e0e0e0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Container for the login form */
+form {
+    background-color: #1e1e1e;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    min-width: 280px;
+    max-width: 400px;
+    width: 100%;
+}
+
+/* Header */
+h1 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+}
+
+/* Input fields */
+input[type="text"],
+input[type="password"] {
+    width: 100%;
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+    border: 1px solid #333;
+    border-radius: 4px;
+    background-color: #2c2c2c;
+    color: #e0e0e0;
+}
+
+/* Button */
+button {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: #981324;
+    margin-bottom: 1rem;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+}
+
+button:hover {
+    background-color: #7a0f1d;
+}
+
+/* Messages */
+.success {
+    background-color: #2e7d32;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    border-radius: 4px;
+    color: #c8e6c9;
+    font-size: 0.9rem;
+}
+
+.error {
+    background-color: #c62828;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    border-radius: 4px;
+    color: #ffcdd2;
+    font-size: 0.9rem;
+}
+
+.logo {
+    max-width: 100px;
+    margin: 0 auto 1rem auto;
+    display: block;
+}
+.auth-container {
+    text-align: center;
+}
