@@ -1,8 +1,6 @@
 use std::collections::HashMap;
 
 use axum_extra::extract::{cookie::Cookie, CookieJar};
-use r2d2::Pool;
-use r2d2_sqlite::SqliteConnectionManager;
 use axum::{extract::{Query, State}, response::{Html, IntoResponse, Redirect}, Form};
 use serde::Deserialize;
 

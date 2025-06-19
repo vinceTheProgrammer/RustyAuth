@@ -7,7 +7,7 @@ use argon2::{
     },
     Argon2
 };
-use base64::{engine::{self, general_purpose}, Engine};
+use base64::{engine::general_purpose, Engine};
 use chrono::Utc;
 use r2d2::{Pool, PooledConnection};
 use r2d2_sqlite::SqliteConnectionManager;

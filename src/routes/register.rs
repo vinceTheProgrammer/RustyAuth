@@ -64,7 +64,6 @@ pub async fn register_page(State(state): State<AppState>) -> Html<String> {
 
 pub fn render_register_form(error: Option<String>, state: &AppState) -> String {
     let css = &state.css;
-    let logo = &state.logo_data_url;
 
     let error_html = if let Some(msg) = error {
         format!(r#"<div class="error">{}</div>"#, msg)

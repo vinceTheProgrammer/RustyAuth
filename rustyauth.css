@@ -10,6 +10,26 @@
     font-family: system-ui, sans-serif;
 }
 
+ /* unvisited link */
+ a:link {
+    color: #9988ff;
+  }
+  
+  /* visited link */
+  a:visited {
+    color: #9988ff;
+  }
+  
+  /* mouse over link */
+  a:hover {
+    color: hotpink;
+  }
+  
+  /* selected link */
+  a:active {
+    color: red;
+  } 
+
 html, body {
     height: 100%;
     background-color: #121212;
