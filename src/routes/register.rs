@@ -77,6 +77,7 @@ pub fn render_register_form(error: Option<String>, state: &AppState) -> String {
         <html>
         <head>
             <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
             <title>Register</title>
             {css}
         </head>
